@@ -1,4 +1,4 @@
-# Ćwiczenie 1 — Podstawy ASM (ARM/Thumb) + AAPCS + integracja z C
+# Podstawy ASM (ARM/Thumb) + AAPCS + integracja z C
 
 ## Cel
 - Zaimplementuj w assemblerze funkcje:
