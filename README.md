@@ -1,20 +1,41 @@
-# Ćwiczenie 2 — Unrolling ×4 i porównanie -O0/-O2/-O3
+# Ćwiczenie 1 — Podstawy ASM (ARM/Thumb) + AAPCS + integracja z C
 
 ## Cel
-- Dodać wariant funkcji z **unrolling ×4** (C lub ASM) i porównać działanie.
-- Zbudować przy `-O0`, `-O2`, `-O3` i porównać rozmiar (`size`) i metrykę czasową (pętla 100×).
-- Upewnić się, że warianty zwracają **ten sam wynik**.
+- Zaimplementuj w assemblerze funkcje:
+  - `size_t strlen8(const char* s);`
+  - `uint32_t sum8(const uint8_t* p, size_t n);`
+- Połącz z C i uruchom na QEMU (`mps2-an385`, semihosting).
+- Wygeneruj krótki log z GDB (`info reg`, `disas`).
+- **Seed S** = `(nr_albumu % 1000)` wpływa na rozmiary danych.
 
 ## Krok po kroku
-1. Uzupełnij `sum8_unroll4` (w C *lub* jako `asm/sum8_unroll4.S` – wtedy pamiętaj dodać do Makefile).
-2. Zmieniaj `CFLAGS` w Makefile na `-O0/-O2/-O3` (lub dodaj cele `make O0/O2/O3`).
-3. Uruchom: `make && ./scripts/run.sh` i zanotuj wyniki, rozmiar (`make size`).
-4. W logu QEMU powinno pojawić się „OK [ex02]” jeśli wyniki się zgadzają.
+1. Zainstaluj narzędzia (zob. instrukcje dla Windows/macOS).
+2. Uzupełnij pliki: `asm/strlen8.S` i `asm/sum8.S` zgodnie z **AAPCS** (argumenty R0–R3, wynik R0, ramka stosu).
+3. Zbuduj i uruchom:
+   ```bash
+   make && ./scripts/run.sh
+   # Windows: .\scripts\run.ps1
+   ```
+4. Sprawdź, czy program wypisał „OK [ex01]”.
+5. (Opcjonalnie) Uruchom debug:
+   ```bash
+   qemu-system-arm -M mps2-an385 -nographic -S -gdb tcp::1234 \
+     -semihosting-config enable=on,target=native \
+     -kernel build/firmware.elf
+   arm-none-eabi-gdb build/firmware.elf
+   (gdb) target remote :1234
+   (gdb) disas strlen8
+   (gdb) info reg
+   ```
 
 ## Oddanie (GitHub Classroom)
-Analogicznie jak w Ćw.1 — push uruchamia CI, które sprawdza znacznik „OK”. Dodaj krótką tabelę: wersja → rozmiar `.text` oraz metrykę.
+1. Odbierz zadanie z linku Classroom → powstanie Twoje repo `ex01-asm-basics-<user>`.
+2. Sklonuj repo, pracuj w gałęzi `main`, rób czytelne commity.
+3. `git push` — uruchomi się CI (GitHub Actions). Status **zielony** = zaliczony test.
+4. Wydruk z `printf` i „OK [ex01]” w logu QEMU jest wymagany.
+5. Dodaj `REPORT_S1_...md` do repo (sekcje 1–4).
 
 ## Kryteria zaliczenia
-- Poprawna implementacja `sum8_unroll4` — 50%.
-- Porównanie wyników i rozmiarów + krótkie wnioski — 30%.
-- Zielony status CI — 20%.
+- Poprawny ASM zgodny z AAPCS (prolog/epilog, rejestry) — 50%.
+- Działający build i uruchomienie na QEMU — 30%.
+- Log GDB + krótki raport — 20%.
