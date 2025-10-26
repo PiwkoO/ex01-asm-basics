@@ -33,7 +33,6 @@
 2. Sklonuj repo, pracuj w gałęzi `main`, rób czytelne commity.
 3. `git push` — uruchomi się CI (GitHub Actions). Status **zielony** = zaliczony test.
 4. Wydruk z `printf` i „OK [ex01]” w logu QEMU jest wymagany.
-5. Dodaj `REPORT_S1_...md` do repo (sekcje 1–4).
 
 ## Kryteria zaliczenia
 - Poprawny ASM zgodny z AAPCS (prolog/epilog, rejestry) — 50%.
